@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convite de Aniversário</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f7f7f7;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+
+        .game-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            overflow: hidden;
+            touch-action: none; /* Desabilita gestos de zoom para evitar conflitos */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; /* Alinha conteúdo ao centro horizontalmente */
+        }
+
+        .dino {
+            position: absolute;
+            bottom: 10%;
+            left: 10%;
+            width: 40px; /* Aumentado para melhor visualização */
+            height: 40px;
+            background-image: url('dino.png'); /* URL da imagem do dinossauro */
+            background-size: cover; /* Ajusta a imagem para cobrir o elemento */
+            background-repeat: no-repeat; /* Não repete a imagem */
+            z-index: 10;
+            transition: bottom 0.5s;
+        }
+
+        .obstacle {
+            position: absolute;
+            bottom: 10%; /* Ajustado para alinhar com o dinossauro */
+            right: -50px;
+            width: 20px;
+            height: 40px;
+            background-color: #333;
+            animation: moveObstacle 4s linear infinite paused; /* Pausado inicialmente */
+        }
+
+        @keyframes moveObstacle {
+            from { right: -50px; }
+            to { right: 100%; }
+        }
+
+        .message-container {
+            position: absolute;
+            top: 10%;
+            width: 100%;
+            text-align: center;
+            z-index: 5; /* Para garantir que o texto fique acima dos outros elementos */
+            line-height: 1.6; /* Aumenta o espaçamento entre as linhas */
+        }
+
+        .message {
+            font-size: 18px; /* Aumentado para maior destaque */
+            color: #000;
+            margin-bottom: 20px; /* Espaçamento inferior */
+        }
+
+        .details {
+            font-size: 14px; /* Aumentado para melhor legibilidade */
+            color: #555;
+            margin-bottom: 10px; /* Espaçamento inferior */
+        }
+
+        .instructions {
+            font-size: 14px;
+            color: #555;
+            margin-top: 20px;
+            display: none; /* Escondido por padrão */
+        }
+
+        .details a {
+            color: inherit; /* Mantém a cor do texto normal */
+            text-decoration: none; /* Remove o sublinhado padrão do link */
+        }
+
+        .details a:hover {
+            text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+        }
+
+        .btn-maps {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #333;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        .btn-maps:hover {
+            background-color: #555;
+        }
+
+        /* Ajustes de padding para dispositivos móveis */
+        @media (max-width: 768px) {
+            .message-container,
+            .message,
+            .details,
+            .instructions {
+                padding: 0 20px; /* Padding horizontal de 20px */
+            }
+
+            .mobile-instructions {
+                display: block;
+            }
+        }
+
+        /* Mostrar instruções específicas para desktops */
+        @media (min-width: 769px) {
+            .desktop-instructions {
+                display: block;
+            }
+
+            .message {
+                font-size: 24px;
+            }
+
+            .details {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container" id="gameContainer">
+    <div class="dino" id="dino"></div>
+    <div class="obstacle" id="obstacle"></div>
+    <div class="message-container">
+        <p class="message">Festa de Aniversário de 1 Ano do Luiz!</p>
+        <p class="details">Data: 10 de agosto de 2024</p>
+        <p class="details">Hora: 18:00</p>
+        <p class="details">Local: Rotary Club, Av. Beira Rio, 117 - Bom Jesus, Pirapora - MG, 39270-000</p>
+        <a class="btn-maps" href="https://www.google.com/maps/search/?api=1&query=Rotary+Club,+Av.+Beira+Rio,+117+-+Sala+01+-+Bom+Jesus,+Pirapora+-+MG,+39270-000" target="_blank">Ver no Google Maps</a>
+        <p class="instructions mobile-instructions">Toque na tela para pular!</p>
+        <p class="instructions desktop-instructions">Pressione a barra de espaço para pular!</p>
+    </div>
+</div>
+
+<script>
+    let gameActive = false;
+    let jumping = false;
+
+    document.addEventListener('keydown', function(event) {
+        if (event.code === 'Space') {
+            jump();
+            if (!gameActive) {
+                startGame();
+                gameActive = true;
+            }
+        }
+    });
+
+    document.getElementById('gameContainer').addEventListener('click', function() {
+        jump();
+        if (!gameActive) {
+            startGame();
+            gameActive = true;
+        }
+    });
+
+    function jump() {
+        if (!jumping) {
+            jumping = true;
+            const dino = document.getElementById('dino');
+            dino.style.bottom = '200px'; // Altura do pulo ajustada
+            setTimeout(function() {
+                dino.style.bottom = '10%'; // Retorna à posição inicial
+                setTimeout(function() {
+                    jumping = false;
+                }, 600); // Tempo total no ar ajustado
+            }, 600);
+        }
+    }
+
+    function startGame() {
+        document.getElementById('obstacle').style.animationPlayState = 'running';
+    }
+
+    setInterval(function() {
+        if (!gameActive) return;
+
+        const dino = document.getElementById('dino');
+        const obstacle = document.getElementById('obstacle');
+        const dinoRect = dino.getBoundingClientRect();
+        const obstacleRect = obstacle.getBoundingClientRect();
+
+        // Verificar colisão horizontal e vertical
+        if (
+            dinoRect.right > obstacleRect.left &&
+            dinoRect.left < obstacleRect.right &&
+            dinoRect.bottom > obstacleRect.top &&
+            dinoRect.top < obstacleRect.bottom
+        ) {
+            alert('Game Over! Tente novamente.');
+            gameActive = false;
+            document.getElementById('obstacle').style.animationPlayState = 'paused';
+        }
+    }, 10);
+</script>
+</body>
+</html>
